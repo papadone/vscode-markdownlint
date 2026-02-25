@@ -1,11 +1,11 @@
 {
-	"name": "vscode-markdownlint",
-	"displayName": "markdownlint",
+	"name": "vscode-markdownlint-ru",
+	"displayName": "markdownlint (RU)",
 	"description": "Markdown linting and style checking for Visual Studio Code",
 	"icon": "images/markdownlint-128.png",
 	"version": "0.61.1",
 	"author": "David Anson (https://dlaa.me/)",
-	"publisher": "DavidAnson",
+	"publisher": "papadone",
 	"sponsor": {
 		"url": "https://github.com/sponsors/DavidAnson"
 	},
@@ -35,17 +35,20 @@
 		"Formatters"
 	],
 	"engines": {
-		"vscode": "^1.97.0"
+		"vscode": "^1.96.0"
 	},
 	"main": "./bundle.js",
 	"browser": "./bundle.web.js",
+	"overrides": {
+  "markdown-it": "14.1.1"
+	},
 	"dependencies": {
 		"markdownlint-cli2": "0.20.0"
 	},
 	"devDependencies": {
 		"@eslint/js": "9.39.1",
 		"@stylistic/eslint-plugin": "5.6.1",
-		"@types/vscode": "1.97.0",
+		"@types/vscode": "1.96.0",
 		"@vscode/test-electron": "2.5.2",
 		"@vscode/vsce": "3.7.1",
 		"cpy-cli": "6.0.0",
@@ -218,6 +221,16 @@
 						"!**/.git",
 						"!**/vendor"
 					]
+				},
+				"markdownlint.messageLanguage": {
+					"description": "Language for markdownlint diagnostic messages",
+					"scope": "application",
+					"type": "string",
+					"enum": [
+						"en",
+						"ru"
+					],
+					"default": "en"
 				},
 				"markdownlint.run": {
 					"description": "Run the linter on save (onSave) or on type (onType)",

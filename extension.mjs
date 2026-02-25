@@ -10,6 +10,7 @@ import { "main" as markdownlintCli2 } from "markdownlint-cli2";
 import { applyFix, applyFixes } from "markdownlint-cli2/markdownlint";
 import { readConfig } from "markdownlint-cli2/markdownlint/promise";
 import helpers from "markdownlint-cli2/markdownlint/helpers";
+import ruDiagnosticTextByRuleId from "./i18n/ru.mjs";
 // eslint-disable-next-line unicorn/no-keyword-prefix
 const { expandTildePath, newLineRe } = helpers;
 import parsers from "markdownlint-cli2/parsers";
@@ -96,10 +97,12 @@ const sectionConfigFile = "configFile";
 const sectionCustomRules = "customRules";
 const sectionFocusMode = "focusMode";
 const sectionLintWorkspaceGlobs = "lintWorkspaceGlobs";
+const sectionMessageLanguage = "messageLanguage";
 const sectionRun = "run";
 const sectionSeverityForError = "severityForError";
 const sectionSeverityForWarning = "severityForWarning";
-const applicationConfigurationSections = [ sectionFocusMode ];
+const messageLanguageRu = "ru";
+const applicationConfigurationSections = [ sectionFocusMode, sectionMessageLanguage ];
 const throttleDuration = 500;
 const customRuleExtensionPrefixRe = /^\{([^}]+)\}\/(.*)$/iu;
 const driveLetterRe = /^[A-Za-z]:[/\\]/;
@@ -129,6 +132,25 @@ const throttle = {
 // eslint-disable-next-line id-length
 function posixPath (p) {
 	return p.split(path.sep).join(path.posix.sep);
+}
+
+// Escapes RegExp syntax characters in a string
+function escapeRegExp (value) {
+	return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+}
+
+// Localizes a markdownlint diagnostic message by rule ID
+function localizeDiagnosticMessage (ruleId, originalMessage, language) {
+	if (language !== messageLanguageRu) {
+		return originalMessage;
+	}
+	const ruText = ruDiagnosticTextByRuleId[ruleId];
+	if (!ruText) {
+		return originalMessage;
+	}
+	const rulePrefixRe = new RegExp(`^${escapeRegExp(ruleId)}(?:/[^:]+)*:\\s*`, "u");
+	const originalDetails = originalMessage.replace(rulePrefixRe, "");
+	return `${ruleId}: ${ruText}. ${originalDetails}`;
 }
 
 // Gets the workspace folder Uri for the document Uri
@@ -596,6 +618,7 @@ function lint (document) {
 					if (result.errorDetail) {
 						message += " [" + result.errorDetail + "]";
 					}
+					message = localizeDiagnosticMessage(ruleName, message, applicationConfiguration[sectionMessageLanguage]);
 					let range = document.lineAt(lineNumber - 1).range;
 					if (result.errorRange) {
 						const start = result.errorRange[0] - 1;

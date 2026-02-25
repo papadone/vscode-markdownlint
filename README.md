@@ -288,6 +288,24 @@ The value of `2` in the example above will ignore issues on the line with the cu
 
 > **Note**: This is an application-level setting and is only valid in user (not workspace) settings.
 
+### Русский язык сообщений
+
+Чтобы включить русские префиксы diagnostics в Problems:
+
+```json
+{
+    "markdownlint.messageLanguage": "ru"
+}
+```
+
+Чтобы вернуть исходные английские сообщения:
+
+```json
+{
+    "markdownlint.messageLanguage": "en"
+}
+```
+
 ### markdownlint.run
 
 By default, linting is performed as you type or edit a document. Linting is fast and efficient and should not interfere with typical workflows.
