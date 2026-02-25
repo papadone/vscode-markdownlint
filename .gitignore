@@ -3,3 +3,5 @@
 bundle.js
 bundle.web.js
 node_modules
+*.vsix
+vsce_errors.txt
