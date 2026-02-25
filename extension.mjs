@@ -108,6 +108,7 @@ const customRuleExtensionPrefixRe = /^\{([^}]+)\}\/(.*)$/iu;
 const driveLetterRe = /^[A-Za-z]:[/\\]/;
 const networkShareRe = /^\\\\[^\\]+\\/;
 const firstSegmentRe = /^\/{1,2}[^/]+\//;
+const ruleIdRe = /^MD\d{3}$/u;
 
 // Variables
 /** @type {Object.<string, any>} */
@@ -611,6 +612,7 @@ function lint (document) {
 					)
 				) {
 					const ruleName = result.ruleNames[0];
+					const ruleId = result.ruleNames.find((name) => ruleIdRe.test(name)) || ruleName;
 					const ruleDescription = result.ruleDescription;
 					const ruleInformationUri = result.ruleInformation && vscode.Uri.parse(result.ruleInformation);
 					ruleNameToInformationUri[ruleName] = ruleInformationUri;
@@ -618,7 +620,7 @@ function lint (document) {
 					if (result.errorDetail) {
 						message += " [" + result.errorDetail + "]";
 					}
-					message = localizeDiagnosticMessage(ruleName, message, applicationConfiguration[sectionMessageLanguage]);
+					message = localizeDiagnosticMessage(ruleId, message, applicationConfiguration[sectionMessageLanguage]);
 					let range = document.lineAt(lineNumber - 1).range;
 					if (result.errorRange) {
 						const start = result.errorRange[0] - 1;
