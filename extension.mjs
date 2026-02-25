@@ -150,8 +150,12 @@ function localizeDiagnosticMessage (ruleId, originalMessage, language) {
 		return originalMessage;
 	}
 	const rulePrefixRe = new RegExp(`^${escapeRegExp(ruleId)}(?:/[^:]+)*:\\s*`, "u");
-	const originalDetails = originalMessage.replace(rulePrefixRe, "");
-	return `${ruleId}: ${ruText}. ${originalDetails}`;
+	const originalDetailsMatch = originalMessage
+		.replace(rulePrefixRe, "")
+		.match(/(\[[^\]]+\].*)$/u);
+	return originalDetailsMatch ?
+		`${ruleId}: ${ruText}. ${originalDetailsMatch[1]}` :
+		`${ruleId}: ${ruText}.`;
 }
 
 // Gets the workspace folder Uri for the document Uri
